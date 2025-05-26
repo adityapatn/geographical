@@ -67,6 +67,7 @@
   
   <p id="feedback"></p>
   <p id="details" style="margin-top:0.5rem; color: #555; font-size: 20px;"></p>
+  <button id="next-button" style="display: none;">Next Question</button>
   <script src="./countries.js"></script>
   <script>
     let current;
@@ -92,6 +93,10 @@
       document.getElementById('guess-country') && (document.getElementById('guess-country').value = '');
       document.getElementById('guess-capital') && (document.getElementById('guess-capital').value = '');
       document.getElementById('details').textContent = '';
+      // Hide the Next Question button when a new question starts
+      document.getElementById('next-button').style.display = 'none';
+      // Re-enable flag selection for new question
+      document.getElementById('flag-options').style.pointerEvents = "auto";
     }
 
     // createFlagOptions() builds flag options from three distractors plus the correct answer.
@@ -213,7 +218,9 @@
         // Add 10px green border to the correct flag
         document.querySelectorAll('#flag-options img').forEach(img => {
           if (img.src === current.flagUrl) {
-            img.style.border = "10px solid green";
+            img.style.border = "2px solid #59ff60";
+            img.style.borderRadius = "4px";
+            img.style.boxShadow = "0px 0px 13px #00ba08";
           }
         });
       } else if (gameMode === 'capitalGiven') {
@@ -226,38 +233,51 @@
         // Add 10px green border to the correct flag
         document.querySelectorAll('#flag-options img').forEach(img => {
           if (img.src === current.flagUrl) {
-            img.style.border = "10px solid green";
+            img.style.border = "2px solid #59ff60";
+            img.style.borderRadius = "4px";
+            img.style.boxShadow = "0px 0px 13px #00ba08";
           }
         });
       }
       const feedbackEl = document.getElementById('feedback');
       feedbackEl.textContent = feedbackMsg;
       feedbackEl.style.color = correct ? 'green' : 'red';
-      // Instruct the user to press Enter to continue
-      document.getElementById('details').textContent = "Press Enter to continue.";
+      // Instead of only showing text, now also show the Next Question button
+      document.getElementById('details').textContent = "Press Enter or click Next Question to continue.";
+      // Note: Global listener already handles Enter key.
     });
-
-    // Global listener: 
-    // If Enter is pressed and an input or textarea is focused, and submit is enabled, submit the guess.
-    // Otherwise, if no input is focused (or if submit is disabled), Enter moves on to the next question and re-enables inputs.
+    
+    // Global Enter listener with a 200ms debounce delay
+    let enterTimeout;
     document.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            if (!document.getElementById('submit').disabled) {
-                // When submit is enabled, submit the guess
-                document.getElementById('submit').click();
-            } else {
-                // Re-enable submit and inputs, and move to the next question.
-                pickRandom();
-                document.getElementById('submit').disabled = false;
-                document.getElementById('guess').disabled = false;
-                document.getElementById('guess-country').disabled = false;
-                document.getElementById('guess-capital').disabled = false;
-            }
-        }
-    }
-);
-
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(enterTimeout);
+        enterTimeout = setTimeout(() => {
+          if (!document.getElementById('submit').disabled) {
+            // When submit is enabled, submit the guess.
+            document.getElementById('submit').click();
+          } else {
+            // When submit is disabled, move on to the next question and re-enable inputs.
+            pickRandom();
+            document.getElementById('submit').disabled = false;
+            document.getElementById('guess').disabled = false;
+            document.getElementById('guess-country').disabled = false;
+            document.getElementById('guess-capital').disabled = false;
+          }
+        }, 100);
+      }
+    });
+    
+    // Next Question button: triggers moving on to the next question when clicked.
+    document.getElementById('next-button').addEventListener('click', () => {
+      pickRandom();
+      document.getElementById('submit').disabled = false;
+      document.getElementById('guess').disabled = false;
+      document.getElementById('guess-country').disabled = false;
+      document.getElementById('guess-capital').disabled = false;
+    });
+    
     // Initialize
     pickRandom();
   </script>
