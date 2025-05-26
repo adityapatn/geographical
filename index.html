@@ -39,9 +39,15 @@
   <!-- New game selection section -->
   <div id="game-selection">
     <p>Select a game:</p>
+    <!-- existing buttons -->
     <button id="game-flag">Flag Given</button>
     <button id="game-country">Country Name Given</button>
     <button id="game-capital">Capital Given</button>
+    <!-- New: choose number of questions -->
+    <label style="margin-left:1rem;">
+      Questions:
+      <input id="question-count" type="number" min="1" value="5" style="width:4rem;">
+    </label>
   </div>
 
   <!-- Game container (initially hidden) -->
@@ -70,8 +76,23 @@
   <button id="next-button" style="display: none;">Next Question</button>
   <script src="./countries.js"></script>
   <script>
-    let current;
+    let current, totalQuestions=Infinity, questionIndex=0;
     let gameMode = ''; // "flagGiven", "countryNameGiven", "capitalGiven"
+
+    // advance to next or return to start
+    function moveNext() {
+      questionIndex++;
+      if (questionIndex < totalQuestions) {
+        pickRandom();
+      } else {
+        document.getElementById('game-container').style.display = 'none';
+        document.getElementById('game-selection').style.display = 'block';
+        // hide feedback and details on returning to start
+        document.getElementById('feedback').textContent = '';
+        document.getElementById('details').textContent = '';
+        document.getElementById('next-button').style.display = 'none';
+      }
+    }
 
     function pickRandom() {
       document.getElementById('submit').disabled = false;
@@ -166,6 +187,8 @@
 
     // Game selection event listeners
     document.getElementById('game-flag').addEventListener('click', () => {
+      totalQuestions = parseInt(document.getElementById('question-count').value) || Infinity;
+      questionIndex = 0;
       gameMode = 'flagGiven';
       document.getElementById('game-selection').style.display = 'none';
       document.getElementById('game-container').style.display = 'block';
@@ -178,6 +201,8 @@
     });
 
     document.getElementById('game-country').addEventListener('click', () => {
+      totalQuestions = parseInt(document.getElementById('question-count').value) || Infinity;
+      questionIndex = 0;
       gameMode = 'countryNameGiven';
       document.getElementById('game-selection').style.display = 'none';
       document.getElementById('game-container').style.display = 'block';
@@ -190,6 +215,8 @@
     });
 
     document.getElementById('game-capital').addEventListener('click', () => {
+      totalQuestions = parseInt(document.getElementById('question-count').value) || Infinity;
+      questionIndex = 0;
       gameMode = 'capitalGiven';
       document.getElementById('game-selection').style.display = 'none';
       document.getElementById('game-container').style.display = 'block';
@@ -218,8 +245,8 @@
         const capitalCorrect = current.capitals.some(cap => levenshtein(guessCapital, cap.toLowerCase()) <= 2);
         correct = countryCorrect && capitalCorrect;
         parts = [
-          countryCorrect ? '✔️ Country correct' : '❌ Country incorrect',
-          capitalCorrect ? '✔️ Capital correct' : '❌ Capital incorrect'
+          countryCorrect ? '✅ Country correct' : `❌ Correct Country: ${current.names[0]}`,
+          capitalCorrect ? '✅ Capital correct' : `❌ Correct Capital: ${current.capitals.join(", ")}`
         ];
       } else if (gameMode === 'countryNameGiven') {
         const guessCapital = document.getElementById('guess').value.trim().toLowerCase();
@@ -228,8 +255,8 @@
         const flagCorrect = selectedFlag === current.flagUrl;
         correct = capitalCorrect && flagCorrect;
         parts = [
-          capitalCorrect ? '✔️ Capital correct' : '❌ Capital incorrect',
-          flagCorrect    ? '✔️ Flag correct'    : '❌ Flag incorrect'
+          capitalCorrect ? '✅ Capital correct' : `❌ Correct Capital: ${current.capitals.join(", ")}`,
+          flagCorrect    ? '✅ Flag correct'    : '❌ Flag incorrect'
         ];
         // highlight correct flag
         document.querySelectorAll('#flag-options img').forEach(img => {
@@ -246,8 +273,8 @@
         const flagCorrect = selectedFlag === current.flagUrl;
         correct = countryCorrect && flagCorrect;
         parts = [
-          countryCorrect ? '✔️ Country correct' : '❌ Country incorrect',
-          flagCorrect    ? '✔️ Flag correct'    : '❌ Flag incorrect'
+          countryCorrect ? '✅ Country correct' : `❌ Correct Country: ${current.names[0]}`,
+          flagCorrect    ? '✅ Flag correct'    : '❌ Flag incorrect'
         ];
         // highlight correct flag
         document.querySelectorAll('#flag-options img').forEach(img => {
@@ -262,7 +289,7 @@
       // common post‐submit rendering
       const feedbackEl = document.getElementById('feedback');
       feedbackEl.innerHTML = parts
-        .map(text => `<span style="color:${text.startsWith('✔️')?'green':'red'}">${text}</span>`)
+        .map(text => `<span style="color:${text.startsWith('✅')?'green':'red'}">${text}</span>`)
         .join(' ');
       feedbackEl.style.color = correct ? 'green' : 'red';
       document.getElementById('details').textContent = "Press Enter or click Next Question to continue.";
@@ -270,8 +297,8 @@
       document.getElementById('next-button').style.display = 'inline-block';
     });
     
-    // Global keydown listener
     let enterTimeout;
+    // Global keydown listener
     document.addEventListener('keydown', e => {
       // intercept digit keys to select flags, prevent them typing into inputs
       if (!document.getElementById('submit').disabled
@@ -291,7 +318,7 @@
           if (!document.getElementById('submit').disabled) {
             document.getElementById('submit').click();
           } else {
-            pickRandom();
+            moveNext();
             document.getElementById('submit').disabled = false;
             document.getElementById('guess').disabled = false;
             document.getElementById('guess-country').disabled = false;
@@ -301,12 +328,11 @@
       }
     });
     
-    // Next Question button: triggers moving on to the next question when clicked.
-    // No manual focus here; pickRandom() takes care of focusing.
+    // Next Question button
     document.getElementById('next-button').addEventListener('click', () => {
-      pickRandom();
+      moveNext();
     });
-    
+
     // Initialize
     pickRandom();
   </script>
