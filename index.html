@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <title>Flag Guessing Game</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 2rem; }
+    body { font-family: sans-serif; text-align: center; padding-right: 2rem; }
     img { width: min(50vw, 500px); height: auto; border: 1px solid #ccc; margin: auto;}
     input { padding: .5rem; font-size: 1rem; }
     button { padding: .5rem 1rem; margin-left: .5rem; margin-top: 10px;}
-    p#feedback { font-weight: bold; margin-top: 1rem; color: inherit; font-size: 30px;}
+    p { font-weight: bold; margin-top: 1rem; color: inherit; font-size: 30px;}
     /* New styling for flag-given inputs: stack vertically full width */
     #flag-given-inputs input {
       display: block;
@@ -79,13 +79,13 @@
         document.getElementById('flag').src = current.flagUrl;
         document.getElementById('flag').style.display = 'block';
         document.getElementById('flag-given-inputs').style.display = 'block';
-        document.getElementById('question').textContent = "Guess the Country and its Capital based on the flag.";
+        document.getElementById('question').textContent = "Guess the Country and its capital based on the flag.";
         document.getElementById('flag-options').style.display = 'none';
       } else if (gameMode === 'countryNameGiven') {
-        document.getElementById('question').textContent = `Country: ${current.names[0]}. Now, guess the capital.`;
+        document.getElementById('question').textContent = `Country: ${current.names[0]}. Guess the capital.`;
         createFlagOptions();
       } else if (gameMode === 'capitalGiven') {
-        document.getElementById('question').textContent = `Capital(s): ${current.capitals.join(", ")}. Now, guess the country.`;
+        document.getElementById('question').textContent = `Capital(s): ${current.capitals.join(", ")}. Guess the country.`;
         createFlagOptions();
       }
       document.getElementById('feedback').textContent = '';
