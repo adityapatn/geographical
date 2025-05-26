@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flag Guessing Game</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2rem; }
+    img { width: 50vw; height: auto; border: 1px solid #ccc; }
+    input { padding: .5rem; font-size: 1rem; }
+    button { padding: .5rem 1rem; margin-left: .5rem; }
+    p#feedback { font-weight: bold; margin-top: 1rem; color: inherit; }
+  </style>
+</head>
+<body>
+  <h1>Guess the Country</h1>
+
+  <!-- New game selection section -->
+  <div id="game-selection">
+    <p>Select a game:</p>
+    <button id="game-flag">Flag Given</button>
+    <button id="game-country">Country Name Given</button>
+    <button id="game-capital">Capital Given</button>
+  </div>
+
+  <!-- Game container (initially hidden) -->
+  <div id="game-container" style="display:none;">
+    <p id="question"></p>
+    <div id="input-fields">
+      <!-- For Flag Given: two inputs -->
+      <div id="flag-given-inputs" style="display:none;">
+        <input id="guess-country" placeholder="Guess Country Name…">
+        <input id="guess-capital" placeholder="Guess Capital…">
+      </div>
+      <!-- For Country or Capital Given: one input -->
+      <div id="single-input" style="display:none;">
+        <input id="guess" placeholder="Your Answer…">
+      </div>
+    </div>
+    <!-- Div for flag options (used when flag guess is required) -->
+    <div id="flag-options" style="display:none; margin-top:1rem;"></div>
+    <button id="submit">Submit</button>
+  </div>
+
+  <img id="flag" src="" alt="Country Flag" style="display:none;">
+  <p id="feedback"></p>
+  <div id="details" style="margin-top:0.5rem; color: #555;"></div>
+  <script src="./countries.js"></script>
+  <script>
+    let current;
+    let gameMode = ''; // "flagGiven", "countryNameGiven", "capitalGiven"
+
+    function pickRandom() {
+      current = countries[Math.floor(Math.random() * countries.length)];
+      if (gameMode === 'flagGiven') {
+        document.getElementById('flag').src = current.flagUrl;
+        document.getElementById('flag').style.display = 'block';
+        document.getElementById('flag-given-inputs').style.display = 'block';
+        document.getElementById('question').textContent = "Guess the Country and its Capital based on the flag.";
+        document.getElementById('flag-options').style.display = 'none';
+      } else if (gameMode === 'countryNameGiven') {
+        document.getElementById('question').textContent = `Country: ${current.names[0]}. Now, guess the capital.`;
+        createFlagOptions();
+      } else if (gameMode === 'capitalGiven') {
+        document.getElementById('question').textContent = `Capital(s): ${current.capitals.join(", ")}. Now, guess the country.`;
+        createFlagOptions();
+      }
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('details').textContent = '';
+      document.getElementById('guess').value = '';
+      document.getElementById('guess-country') && (document.getElementById('guess-country').value = '');
+      document.getElementById('guess-capital') && (document.getElementById('guess-capital').value = '');
+    }
+
+    // Create flag options with one correct flag and three distractors
+    function createFlagOptions() {
+      const flagOptionsDiv = document.getElementById('flag-options');
+      flagOptionsDiv.innerHTML = '';
+      const distractors = [];
+      while(distractors.length < 3) {
+        const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+        if (randomCountry.flagUrl !== current.flagUrl && !distractors.includes(randomCountry)) {
+          distractors.push(randomCountry);
+        }
+      }
+      const options = distractors.concat(current);
+      options.sort(() => Math.random() - 0.5);
+      options.forEach(opt => {
+        const img = document.createElement('img');
+        img.src = opt.flagUrl;
+        img.style.width = "20vw";
+        img.style.margin = "0 0.5rem";
+        img.style.cursor = "pointer";
+        img.addEventListener('click', () => {
+          document.querySelectorAll('#flag-options img').forEach(el => el.style.border = "none");
+          img.style.border = "3px solid blue";
+          flagOptionsDiv.setAttribute('data-selected', opt.flagUrl);
+        });
+        flagOptionsDiv.appendChild(img);
+      });
+      flagOptionsDiv.style.display = 'block';
+    }
+
+    // 2. Levenshtein distance
+    function levenshtein(a, b) {
+      const m = a.length, n = b.length;
+      const dp = Array.from({length: m+1}, () => Array(n+1).fill(0));
+      for (let i = 0; i <= m; i++) dp[i][0] = i;
+      for (let j = 0; j <= n; j++) dp[0][j] = j;
+      for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+          dp[i][j] = Math.min(
+            dp[i-1][j] + 1,
+            dp[i][j-1] + 1,
+            dp[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1)
+          );
+        }
+      }
+      return dp[m][n];
+    }
+
+    // Game selection event listeners
+    document.getElementById('game-flag').addEventListener('click', () => {
+      gameMode = 'flagGiven';
+      document.getElementById('game-selection').style.display = 'none';
+      document.getElementById('game-container').style.display = 'block';
+      document.getElementById('flag').style.display = 'block';
+      document.getElementById('flag-given-inputs').style.display = 'block';
+      document.getElementById('single-input').style.display = 'none';
+      document.getElementById('flag-options').style.display = 'none';
+      document.getElementById('question').textContent = "Guess the Country and its Capital based on the flag.";
+      pickRandom();
+    });
+
+    document.getElementById('game-country').addEventListener('click', () => {
+      gameMode = 'countryNameGiven';
+      document.getElementById('game-selection').style.display = 'none';
+      document.getElementById('game-container').style.display = 'block';
+      document.getElementById('flag').style.display = 'none';
+      document.getElementById('flag-given-inputs').style.display = 'none';
+      document.getElementById('single-input').style.display = 'block';
+      document.getElementById('guess').placeholder = "Guess the Capital";
+      document.getElementById('question').textContent = ""; // will show country below
+      pickRandom();
+    });
+
+    document.getElementById('game-capital').addEventListener('click', () => {
+      gameMode = 'capitalGiven';
+      document.getElementById('game-selection').style.display = 'none';
+      document.getElementById('game-container').style.display = 'block';
+      document.getElementById('flag').style.display = 'none';
+      document.getElementById('flag-given-inputs').style.display = 'none';
+      document.getElementById('single-input').style.display = 'block';
+      document.getElementById('guess').placeholder = "Guess the Country";
+      document.getElementById('question').textContent = ""; // will show capitals below
+      pickRandom();
+    });
+
+    document.getElementById('submit').addEventListener('click', () => {
+      let correct = false;
+      let feedbackMsg = '';
+      if (gameMode === 'flagGiven') {
+        const guessCountry = document.getElementById('guess-country').value.trim().toLowerCase();
+        const guessCapital = document.getElementById('guess-capital').value.trim().toLowerCase();
+        const countryCorrect = current.names.some(name => levenshtein(guessCountry, name.toLowerCase()) <= 2);
+        const capitalCorrect = current.capitals.some(cap => levenshtein(guessCapital, cap.toLowerCase()) <= 2);
+        correct = countryCorrect && capitalCorrect;
+        feedbackMsg = correct ? '✔️ Correct!' : '❌ Try again…';
+      } else if (gameMode === 'countryNameGiven') {
+        const guessCapital = document.getElementById('guess').value.trim().toLowerCase();
+        const capitalCorrect = current.capitals.some(cap => levenshtein(guessCapital, cap.toLowerCase()) <= 2);
+        const selectedFlag = document.getElementById('flag-options').getAttribute('data-selected');
+        const flagCorrect = selectedFlag === current.flagUrl;
+        correct = capitalCorrect && flagCorrect;
+        feedbackMsg = correct ? '✔️ Correct!' : '❌ Try again…';
+      } else if (gameMode === 'capitalGiven') {
+        const guessCountry = document.getElementById('guess').value.trim().toLowerCase();
+        const countryCorrect = current.names.some(name => levenshtein(guessCountry, name.toLowerCase()) <= 2);
+        const selectedFlag = document.getElementById('flag-options').getAttribute('data-selected');
+        const flagCorrect = selectedFlag === current.flagUrl;
+        correct = countryCorrect && flagCorrect;
+        feedbackMsg = correct ? '✔️ Correct!' : '❌ Try again…';
+      }
+
+      const feedbackEl = document.getElementById('feedback');
+      feedbackEl.textContent = feedbackMsg;
+      feedbackEl.style.color   = correct ? 'green' : 'red';
+      document.getElementById('details').textContent =
+        `Answer: ${current.names[0]}, Capital: ${current.capitals.join(", ")}`;
+
+      if (correct) setTimeout(pickRandom, 1000);
+    });
+
+    // allow Enter key in input to trigger submit
+    document.getElementById('guess').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('submit').click();
+      }
+    });
+
+    // Initialize
+    pickRandom();
+  </script>
+</body>
+</html>
