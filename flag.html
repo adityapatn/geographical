@@ -127,9 +127,9 @@
                 el.style.boxShadow = "";
             });
             // Highlight the selected flag
-            img.style.border = "2px solid #59c8ff";
+            img.style.border = "2px solid #005FCC";
             img.style.borderRadius = "4px";
-            img.style.boxShadow = "0px 0px 13px #006cff";
+            img.style.boxShadow = "0px 0px 10px 5px #5490ff";
             flagOptionsDiv.setAttribute('data-selected', opt.flagUrl);
         });
         flagOptionsDiv.appendChild(img);
@@ -218,9 +218,9 @@
         // Add 10px green border to the correct flag
         document.querySelectorAll('#flag-options img').forEach(img => {
           if (img.src === current.flagUrl) {
-            img.style.border = "2px solid #59ff60";
+            img.style.border = "2px solid #00b831";
             img.style.borderRadius = "4px";
-            img.style.boxShadow = "0px 0px 13px #00ba08";
+            img.style.boxShadow = "0px 0px 10px 5px #33ff40";
           }
         });
       } else if (gameMode === 'capitalGiven') {
@@ -235,7 +235,7 @@
           if (img.src === current.flagUrl) {
             img.style.border = "2px solid #59ff60";
             img.style.borderRadius = "4px";
-            img.style.boxShadow = "0px 0px 13px #00ba08";
+            img.style.boxShadow = "0px 0px 10px 5px #33ff40";
           }
         });
       }
@@ -244,7 +244,8 @@
       feedbackEl.style.color = correct ? 'green' : 'red';
       // Instead of only showing text, now also show the Next Question button
       document.getElementById('details').textContent = "Press Enter or click Next Question to continue.";
-      // Note: Global listener already handles Enter key.
+      // lock flag options so user can't change selection
+      document.getElementById('flag-options').style.pointerEvents = 'none';
     });
     
     // Global Enter listener with a 200ms debounce delay
