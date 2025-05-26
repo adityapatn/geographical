@@ -300,6 +300,11 @@
     let enterTimeout;
     // Global keydown listener
     document.addEventListener('keydown', e => {
+      // do nothing if still on the start screen
+      if (document.getElementById('game-container').style.display === 'none') {
+        return;
+      }
+
       // intercept digit keys to select flags, prevent them typing into inputs
       if (!document.getElementById('submit').disabled
           && (gameMode === 'countryNameGiven' || gameMode === 'capitalGiven')) {
