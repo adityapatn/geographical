@@ -74,6 +74,10 @@
     let gameMode = ''; // "flagGiven", "countryNameGiven", "capitalGiven"
 
     function pickRandom() {
+      document.getElementById('submit').disabled = false;
+      document.getElementById('guess').disabled = false;
+      document.getElementById('guess-country').disabled = false;
+      document.getElementById('guess-capital').disabled = false;
       current = countries[Math.floor(Math.random() * countries.length)];
       if (gameMode === 'flagGiven') {
         document.getElementById('flag').src = current.flagUrl;
@@ -97,6 +101,11 @@
       document.getElementById('next-button').style.display = 'none';
       // Re-enable flag selection for new question
       document.getElementById('flag-options').style.pointerEvents = "auto";
+      // focus the first visible input whenever a new question appears
+      const firstInput = gameMode === 'flagGiven'
+        ? document.getElementById('guess-country')
+        : document.getElementById('guess');
+      firstInput && firstInput.focus();
     }
 
     // createFlagOptions() builds flag options from three distractors plus the correct answer.
@@ -207,7 +216,11 @@
         const countryCorrect = current.names.some(name => levenshtein(guessCountry, name.toLowerCase()) <= 2);
         const capitalCorrect = current.capitals.some(cap => levenshtein(guessCapital, cap.toLowerCase()) <= 2);
         correct = countryCorrect && capitalCorrect;
-        feedbackMsg = correct ? '✔️ Correct!' : `❌ Country: ${current.names[0]}, Capital: ${current.capitals.join(", ")}`;
+        // independent feedback
+        const parts = [];
+        parts.push(countryCorrect ? '✔️ Country correct' : '❌ Country incorrect');
+        parts.push(capitalCorrect ? '✔️ Capital correct' : '❌ Capital incorrect');
+        feedbackMsg = parts.join(' ');
       } else if (gameMode === 'countryNameGiven') {
         const guessCapital = document.getElementById('guess').value.trim().toLowerCase();
         const capitalCorrect = current.capitals.some(cap => levenshtein(guessCapital, cap.toLowerCase()) <= 2);
@@ -246,6 +259,8 @@
       document.getElementById('details').textContent = "Press Enter or click Next Question to continue.";
       // lock flag options so user can't change selection
       document.getElementById('flag-options').style.pointerEvents = 'none';
+      // display the Next Question button
+      document.getElementById('next-button').style.display = 'inline-block';
     });
     
     // Global Enter listener with a 200ms debounce delay
@@ -271,12 +286,9 @@
     });
     
     // Next Question button: triggers moving on to the next question when clicked.
+    // No manual focus here; pickRandom() takes care of focusing.
     document.getElementById('next-button').addEventListener('click', () => {
       pickRandom();
-      document.getElementById('submit').disabled = false;
-      document.getElementById('guess').disabled = false;
-      document.getElementById('guess-country').disabled = false;
-      document.getElementById('guess-capital').disabled = false;
     });
     
     // Initialize
