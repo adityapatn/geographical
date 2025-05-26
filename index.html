@@ -265,11 +265,12 @@
       
       let correct = false;
       let parts = [];
+
       if (gameMode === 'flagGiven') {
-        const guessCountry = guessCountry.value.trim().toLowerCase();
-        const guessCapital = guessCapital.value.trim().toLowerCase();
-        const countryCorrect = current.names.some(name => levenshtein(guessCountry, name.toLowerCase()) <= 2);
-        const capitalCorrect = current.capitals.some(cap => levenshtein(guessCapital, cap.toLowerCase()) <= 2);
+        const countryVal = guessCountry.value.trim().toLowerCase();
+        const capitalVal = guessCapital.value.trim().toLowerCase();
+        const countryCorrect = current.names.some(name => levenshtein(countryVal, name.toLowerCase()) <= 2);
+        const capitalCorrect = current.capitals.some(cap => levenshtein(capitalVal, cap.toLowerCase()) <= 2);
         correct = countryCorrect && capitalCorrect;
         parts = [
           countryCorrect ? '✅ Country correct' : `❌ Correct Country: ${current.names[0]}`,
