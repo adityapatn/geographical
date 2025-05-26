@@ -21,15 +21,15 @@
     /* The styling below is for the flag options container 
        and its flag images to maintain layout and size */
     #flag-options {
-      width: 80vw;  /* This gives 10vw margins on each side */
+      width: 100vw;
       margin-left: auto;
       margin-right: auto;
       display: flex;
       justify-content: center;
     }
     #flag-options img {
-      height: 5vw;
       width: auto;
+      height: 10vw;
     }
   </style>
 </head>
@@ -110,14 +110,22 @@
       options.forEach(opt => {
         const img = document.createElement('img');
         img.src = opt.flagUrl;
-        img.style.width = "20vw";
+        //img.style.width = "20vw";
         img.style.margin = "0 0.5rem";
         img.style.cursor = "pointer";
-        // When a flag is clicked, highlight it and record the selection.
+        // When a flag is clicked, reset unselected flags and highlight the selected one.
         img.addEventListener('click', () => {
-          document.querySelectorAll('#flag-options img').forEach(el => el.style.border = "none");
-          img.style.border = "3px solid blue";
-          flagOptionsDiv.setAttribute('data-selected', opt.flagUrl);
+            document.querySelectorAll('#flag-options img').forEach(el => {
+                // Reset unselected flag borders to default style
+                el.style.border = "1px solid #ccc";
+                el.style.borderRadius = "";
+                el.style.boxShadow = "";
+            });
+            // Highlight the selected flag
+            img.style.border = "2px solid #59c8ff";
+            img.style.borderRadius = "4px";
+            img.style.boxShadow = "0px 0px 13px #006cff";
+            flagOptionsDiv.setAttribute('data-selected', opt.flagUrl);
         });
         flagOptionsDiv.appendChild(img);
       });
@@ -202,6 +210,12 @@
         const flagCorrect = selectedFlag === current.flagUrl;
         correct = capitalCorrect && flagCorrect;
         feedbackMsg = correct ? '✔️ Correct!' : `❌ Capital: ${current.capitals.join(", ")}`;
+        // Add 10px green border to the correct flag
+        document.querySelectorAll('#flag-options img').forEach(img => {
+          if (img.src === current.flagUrl) {
+            img.style.border = "10px solid green";
+          }
+        });
       } else if (gameMode === 'capitalGiven') {
         const guessCountry = document.getElementById('guess').value.trim().toLowerCase();
         const countryCorrect = current.names.some(name => levenshtein(guessCountry, name.toLowerCase()) <= 2);
@@ -209,6 +223,12 @@
         const flagCorrect = selectedFlag === current.flagUrl;
         correct = countryCorrect && flagCorrect;
         feedbackMsg = correct ? '✔️ Correct!' : `❌ Country: ${current.names[0]}`;
+        // Add 10px green border to the correct flag
+        document.querySelectorAll('#flag-options img').forEach(img => {
+          if (img.src === current.flagUrl) {
+            img.style.border = "10px solid green";
+          }
+        });
       }
       const feedbackEl = document.getElementById('feedback');
       feedbackEl.textContent = feedbackMsg;
