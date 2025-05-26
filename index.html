@@ -76,7 +76,8 @@
   <button id="next-button" style="display: none;">Next Question</button>
   <script src="./countries.js"></script>
   <script>
-    let current, totalQuestions=Infinity, questionIndex=0;
+    let current, totalQuestions = Infinity, questionIndex = 0;
+    let scoreEarned = 0, scorePossible = 0;
     let gameMode = ''; // "flagGiven", "countryNameGiven", "capitalGiven"
 
     // advance to next or return to start
@@ -87,9 +88,13 @@
       } else {
         document.getElementById('game-container').style.display = 'none';
         document.getElementById('game-selection').style.display = 'block';
-        // hide feedback and details on returning to start
+        // display final score
+        const pct = scorePossible
+          ? ((scoreEarned/scorePossible)*100).toFixed(2)
+          : '0.00';
+        document.getElementById('details').textContent =
+          `${scoreEarned} out of ${scorePossible} correct (${pct}%)`;
         document.getElementById('feedback').textContent = '';
-        document.getElementById('details').textContent = '';
         document.getElementById('next-button').style.display = 'none';
       }
     }
@@ -189,6 +194,7 @@
     document.getElementById('game-flag').addEventListener('click', () => {
       totalQuestions = parseInt(document.getElementById('question-count').value) || Infinity;
       questionIndex = 0;
+      scoreEarned = scorePossible = 0;
       gameMode = 'flagGiven';
       document.getElementById('game-selection').style.display = 'none';
       document.getElementById('game-container').style.display = 'block';
@@ -203,6 +209,7 @@
     document.getElementById('game-country').addEventListener('click', () => {
       totalQuestions = parseInt(document.getElementById('question-count').value) || Infinity;
       questionIndex = 0;
+      scoreEarned = scorePossible = 0;
       gameMode = 'countryNameGiven';
       document.getElementById('game-selection').style.display = 'none';
       document.getElementById('game-container').style.display = 'block';
@@ -217,6 +224,7 @@
     document.getElementById('game-capital').addEventListener('click', () => {
       totalQuestions = parseInt(document.getElementById('question-count').value) || Infinity;
       questionIndex = 0;
+      scoreEarned = scorePossible = 0;
       gameMode = 'capitalGiven';
       document.getElementById('game-selection').style.display = 'none';
       document.getElementById('game-container').style.display = 'block';
@@ -237,7 +245,6 @@
       
       let correct = false;
       let parts = [];
-      
       if (gameMode === 'flagGiven') {
         const guessCountry = document.getElementById('guess-country').value.trim().toLowerCase();
         const guessCapital = document.getElementById('guess-capital').value.trim().toLowerCase();
@@ -285,6 +292,10 @@
           }
         });
       }
+      // update scoring
+      scorePossible += parts.length;
+      // count only parts prefixed with ✅
+      scoreEarned  += parts.filter(text => text.startsWith('✅')).length;
 
       // common post‐submit rendering
       const feedbackEl = document.getElementById('feedback');
