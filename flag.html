@@ -8,7 +8,7 @@
     img { width: min(50vw, 500px); height: auto; border: 1px solid #ccc; margin: auto;}
     input { padding: .5rem; font-size: 1rem; }
     button { padding: .5rem 1rem; margin-left: .5rem; margin-top: 10px;}
-    p#feedback { font-weight: bold; margin-top: 1rem; color: inherit; }
+    p#feedback { font-weight: bold; margin-top: 1rem; color: inherit; font-size: 30px;}
     /* New styling for flag-given inputs: stack vertically full width */
     #flag-given-inputs input {
       display: block;
@@ -17,6 +17,18 @@
       margin-left: auto;
       margin-top: 10px;
       box-sizing: border-box;
+    }
+    /* New styles for flag options */
+    #flag-options {
+      width: 80vw;  /* 10vw margin left and right */
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      justify-content: center;
+    }
+    #flag-options img {
+      height: 5vw;
+      width: auto;
     }
   </style>
 </head>
@@ -53,7 +65,7 @@
 
   
   <p id="feedback"></p>
-  <div id="details" style="margin-top:0.5rem; color: #555;"></div>
+  <p id="details" style="margin-top:0.5rem; color: #555; font-size: 20px;"></p>
   <script src="./countries.js"></script>
   <script>
     let current;
@@ -75,10 +87,10 @@
         createFlagOptions();
       }
       document.getElementById('feedback').textContent = '';
-      document.getElementById('details').textContent = '';
       document.getElementById('guess').value = '';
       document.getElementById('guess-country') && (document.getElementById('guess-country').value = '');
       document.getElementById('guess-capital') && (document.getElementById('guess-capital').value = '');
+      document.getElementById('details').textContent = '';
     }
 
     // Create flag options with one correct flag and three distractors
@@ -166,6 +178,11 @@
     });
 
     document.getElementById('submit').addEventListener('click', () => {
+      // disable submit button and input fields to prevent further changes
+      document.getElementById('submit').disabled = true;
+      document.getElementById('guess').disabled = true;
+      document.getElementById('guess-country').disabled = true;
+      document.getElementById('guess-capital').disabled = true;
       let correct = false;
       let feedbackMsg = '';
       if (gameMode === 'flagGiven') {
@@ -174,49 +191,45 @@
         const countryCorrect = current.names.some(name => levenshtein(guessCountry, name.toLowerCase()) <= 2);
         const capitalCorrect = current.capitals.some(cap => levenshtein(guessCapital, cap.toLowerCase()) <= 2);
         correct = countryCorrect && capitalCorrect;
-        feedbackMsg = correct ? '✔️ Correct!' : '❌ Try again…';
+        feedbackMsg = correct ? '✔️ Correct!' : `❌ Country: ${current.names[0]}, Capital: ${current.capitals.join(", ")}`;
       } else if (gameMode === 'countryNameGiven') {
         const guessCapital = document.getElementById('guess').value.trim().toLowerCase();
         const capitalCorrect = current.capitals.some(cap => levenshtein(guessCapital, cap.toLowerCase()) <= 2);
         const selectedFlag = document.getElementById('flag-options').getAttribute('data-selected');
         const flagCorrect = selectedFlag === current.flagUrl;
         correct = capitalCorrect && flagCorrect;
-        feedbackMsg = correct ? '✔️ Correct!' : '❌ Try again…';
+        feedbackMsg = correct ? '✔️ Correct!' : `❌ Capital: ${current.capitals.join(", ")}`;
       } else if (gameMode === 'capitalGiven') {
         const guessCountry = document.getElementById('guess').value.trim().toLowerCase();
         const countryCorrect = current.names.some(name => levenshtein(guessCountry, name.toLowerCase()) <= 2);
         const selectedFlag = document.getElementById('flag-options').getAttribute('data-selected');
         const flagCorrect = selectedFlag === current.flagUrl;
         correct = countryCorrect && flagCorrect;
-        feedbackMsg = correct ? '✔️ Correct!' : '❌ Try again…';
+        feedbackMsg = correct ? '✔️ Correct!' : `❌ Country: ${current.names[0]}`;
       }
-
       const feedbackEl = document.getElementById('feedback');
       feedbackEl.textContent = feedbackMsg;
       feedbackEl.style.color   = correct ? 'green' : 'red';
-      document.getElementById('details').textContent =
-        `Answer: ${current.names[0]}, Capital: ${current.capitals.join(", ")}`;
-
-      if (correct) setTimeout(pickRandom, 1000);
+      // Append instruction to continue
+      document.getElementById('details').textContent = "Press Enter to continue.";
     });
 
-    // allow Enter key in input to trigger submit
-    document.getElementById('guess').addEventListener('keydown', e => {
+    // Remove existing input-specific and global keydown listeners
+    // Add one global keydown listener:
+    document.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         e.preventDefault();
-        document.getElementById('submit').click();
-      }
-    });
-    document.getElementById('guess-country').addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        document.getElementById('submit').click();
-      }
-    });
-    document.getElementById('guess-capital').addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        document.getElementById('submit').click();
+        if (!document.getElementById('submit').disabled) {
+          // When submit is enabled, submit the guess
+          document.getElementById('submit').click();
+        } else {
+          // Move on to the next question and re-enable submit and answer inputs.
+          document.getElementById('submit').disabled = false;
+          document.getElementById('guess').disabled = false;
+          document.getElementById('guess-country').disabled = false;
+          document.getElementById('guess-capital').disabled = false;
+          pickRandom();
+        }
       }
     });
 
