@@ -18,9 +18,10 @@
       margin-top: 10px;
       box-sizing: border-box;
     }
-    /* New styles for flag options */
+    /* The styling below is for the flag options container 
+       and its flag images to maintain layout and size */
     #flag-options {
-      width: 80vw;  /* 10vw margin left and right */
+      width: 80vw;  /* This gives 10vw margins on each side */
       margin-left: auto;
       margin-right: auto;
       display: flex;
@@ -93,7 +94,7 @@
       document.getElementById('details').textContent = '';
     }
 
-    // Create flag options with one correct flag and three distractors
+    // createFlagOptions() builds flag options from three distractors plus the correct answer.
     function createFlagOptions() {
       const flagOptionsDiv = document.getElementById('flag-options');
       flagOptionsDiv.innerHTML = '';
@@ -112,6 +113,7 @@
         img.style.width = "20vw";
         img.style.margin = "0 0.5rem";
         img.style.cursor = "pointer";
+        // When a flag is clicked, highlight it and record the selection.
         img.addEventListener('click', () => {
           document.querySelectorAll('#flag-options img').forEach(el => el.style.border = "none");
           img.style.border = "3px solid blue";
@@ -178,11 +180,12 @@
     });
 
     document.getElementById('submit').addEventListener('click', () => {
-      // disable submit button and input fields to prevent further changes
+      // Disable submit button and answer inputs
       document.getElementById('submit').disabled = true;
       document.getElementById('guess').disabled = true;
       document.getElementById('guess-country').disabled = true;
       document.getElementById('guess-capital').disabled = true;
+      
       let correct = false;
       let feedbackMsg = '';
       if (gameMode === 'flagGiven') {
@@ -209,29 +212,31 @@
       }
       const feedbackEl = document.getElementById('feedback');
       feedbackEl.textContent = feedbackMsg;
-      feedbackEl.style.color   = correct ? 'green' : 'red';
-      // Append instruction to continue
+      feedbackEl.style.color = correct ? 'green' : 'red';
+      // Instruct the user to press Enter to continue
       document.getElementById('details').textContent = "Press Enter to continue.";
     });
 
-    // Remove existing input-specific and global keydown listeners
-    // Add one global keydown listener:
+    // Global listener: 
+    // If Enter is pressed and an input or textarea is focused, and submit is enabled, submit the guess.
+    // Otherwise, if no input is focused (or if submit is disabled), Enter moves on to the next question and re-enables inputs.
     document.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        if (!document.getElementById('submit').disabled) {
-          // When submit is enabled, submit the guess
-          document.getElementById('submit').click();
-        } else {
-          // Move on to the next question and re-enable submit and answer inputs.
-          document.getElementById('submit').disabled = false;
-          document.getElementById('guess').disabled = false;
-          document.getElementById('guess-country').disabled = false;
-          document.getElementById('guess-capital').disabled = false;
-          pickRandom();
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (!document.getElementById('submit').disabled) {
+                // When submit is enabled, submit the guess
+                document.getElementById('submit').click();
+            } else {
+                // Re-enable submit and inputs, and move to the next question.
+                pickRandom();
+                document.getElementById('submit').disabled = false;
+                document.getElementById('guess').disabled = false;
+                document.getElementById('guess-country').disabled = false;
+                document.getElementById('guess-capital').disabled = false;
+            }
         }
-      }
-    });
+    }
+);
 
     // Initialize
     pickRandom();
