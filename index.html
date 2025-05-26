@@ -209,26 +209,29 @@
       document.getElementById('guess-capital').disabled = true;
       
       let correct = false;
-      let feedbackMsg = '';
+      let parts = [];
+      
       if (gameMode === 'flagGiven') {
         const guessCountry = document.getElementById('guess-country').value.trim().toLowerCase();
         const guessCapital = document.getElementById('guess-capital').value.trim().toLowerCase();
         const countryCorrect = current.names.some(name => levenshtein(guessCountry, name.toLowerCase()) <= 2);
         const capitalCorrect = current.capitals.some(cap => levenshtein(guessCapital, cap.toLowerCase()) <= 2);
         correct = countryCorrect && capitalCorrect;
-        // independent feedback
-        const parts = [];
-        parts.push(countryCorrect ? '✔️ Country correct' : '❌ Country incorrect');
-        parts.push(capitalCorrect ? '✔️ Capital correct' : '❌ Capital incorrect');
-        feedbackMsg = parts.join(' ');
+        parts = [
+          countryCorrect ? '✔️ Country correct' : '❌ Country incorrect',
+          capitalCorrect ? '✔️ Capital correct' : '❌ Capital incorrect'
+        ];
       } else if (gameMode === 'countryNameGiven') {
         const guessCapital = document.getElementById('guess').value.trim().toLowerCase();
         const capitalCorrect = current.capitals.some(cap => levenshtein(guessCapital, cap.toLowerCase()) <= 2);
         const selectedFlag = document.getElementById('flag-options').getAttribute('data-selected');
         const flagCorrect = selectedFlag === current.flagUrl;
         correct = capitalCorrect && flagCorrect;
-        feedbackMsg = correct ? '✔️ Correct!' : `❌ Capital: ${current.capitals.join(", ")}`;
-        // Add 10px green border to the correct flag
+        parts = [
+          capitalCorrect ? '✔️ Capital correct' : '❌ Capital incorrect',
+          flagCorrect    ? '✔️ Flag correct'    : '❌ Flag incorrect'
+        ];
+        // highlight correct flag
         document.querySelectorAll('#flag-options img').forEach(img => {
           if (img.src === current.flagUrl) {
             img.style.border = "2px solid #00b831";
@@ -242,8 +245,11 @@
         const selectedFlag = document.getElementById('flag-options').getAttribute('data-selected');
         const flagCorrect = selectedFlag === current.flagUrl;
         correct = countryCorrect && flagCorrect;
-        feedbackMsg = correct ? '✔️ Correct!' : `❌ Country: ${current.names[0]}`;
-        // Add 10px green border to the correct flag
+        parts = [
+          countryCorrect ? '✔️ Country correct' : '❌ Country incorrect',
+          flagCorrect    ? '✔️ Flag correct'    : '❌ Flag incorrect'
+        ];
+        // highlight correct flag
         document.querySelectorAll('#flag-options img').forEach(img => {
           if (img.src === current.flagUrl) {
             img.style.border = "2px solid #59ff60";
@@ -252,14 +258,15 @@
           }
         });
       }
+
+      // common post‐submit rendering
       const feedbackEl = document.getElementById('feedback');
-      feedbackEl.textContent = feedbackMsg;
+      feedbackEl.innerHTML = parts
+        .map(text => `<span style="color:${text.startsWith('✔️')?'green':'red'}">${text}</span>`)
+        .join(' ');
       feedbackEl.style.color = correct ? 'green' : 'red';
-      // Instead of only showing text, now also show the Next Question button
       document.getElementById('details').textContent = "Press Enter or click Next Question to continue.";
-      // lock flag options so user can't change selection
       document.getElementById('flag-options').style.pointerEvents = 'none';
-      // display the Next Question button
       document.getElementById('next-button').style.display = 'inline-block';
     });
     
