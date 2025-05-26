@@ -8,8 +8,7 @@ I want a game where I am shown a flag, and given a textbox to guess the country.
 Ask the user to pick between one of three games: Flag given, Country name given, and Capital given. The flag given game should show the user a flag, and prompt the user to guess the country name and the capital. The country name given game should show the user a country name, and prompt the user to guess the capital and the flag. The capital given game should show the user a list of capitals, then prompt the user to guess the country name and the flag. For games where the the user needs to guess the flag, show three other randomly chosen flags along with the correct flag in a row.
 
 To-do:
+ - Show user the correct country/capital if incorrect
  - Add fixed-length quiz
- - Split correctness by answer
- - Select flags by number buttons
  - Count of correct answers
  - Limit by region

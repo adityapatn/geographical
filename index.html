@@ -270,18 +270,27 @@
       document.getElementById('next-button').style.display = 'inline-block';
     });
     
-    // Global Enter listener with a 200ms debounce delay
+    // Global keydown listener
     let enterTimeout;
     document.addEventListener('keydown', e => {
+      // intercept digit keys to select flags, prevent them typing into inputs
+      if (!document.getElementById('submit').disabled
+          && (gameMode === 'countryNameGiven' || gameMode === 'capitalGiven')) {
+        const n = ['1','2','3','4'].indexOf(e.key);
+        if (n !== -1) {
+          e.preventDefault();
+          const imgs = Array.from(document.querySelectorAll('#flag-options img'));
+          imgs[n] && imgs[n].click();  // select that flag
+        }
+      }
+
       if (e.key === 'Enter') {
         e.preventDefault();
         clearTimeout(enterTimeout);
         enterTimeout = setTimeout(() => {
           if (!document.getElementById('submit').disabled) {
-            // When submit is enabled, submit the guess.
             document.getElementById('submit').click();
           } else {
-            // When submit is disabled, move on to the next question and re-enable inputs.
             pickRandom();
             document.getElementById('submit').disabled = false;
             document.getElementById('guess').disabled = false;
