@@ -5,10 +5,19 @@
   <title>Flag Guessing Game</title>
   <style>
     body { font-family: sans-serif; text-align: center; padding: 2rem; }
-    img { width: 50vw; height: auto; border: 1px solid #ccc; }
+    img { width: min(50vw, 500px); height: auto; border: 1px solid #ccc; margin: auto;}
     input { padding: .5rem; font-size: 1rem; }
-    button { padding: .5rem 1rem; margin-left: .5rem; }
+    button { padding: .5rem 1rem; margin-left: .5rem; margin-top: 10px;}
     p#feedback { font-weight: bold; margin-top: 1rem; color: inherit; }
+    /* New styling for flag-given inputs: stack vertically full width */
+    #flag-given-inputs input {
+      display: block;
+      width: min(50vw, 500px);
+      margin-right: auto;
+      margin-left: auto;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
   </style>
 </head>
 <body>
@@ -25,6 +34,7 @@
   <!-- Game container (initially hidden) -->
   <div id="game-container" style="display:none;">
     <p id="question"></p>
+    <img id="flag" src="" alt="Country Flag" style="display:none;">
     <div id="input-fields">
       <!-- For Flag Given: two inputs -->
       <div id="flag-given-inputs" style="display:none;">
@@ -41,7 +51,7 @@
     <button id="submit">Submit</button>
   </div>
 
-  <img id="flag" src="" alt="Country Flag" style="display:none;">
+  
   <p id="feedback"></p>
   <div id="details" style="margin-top:0.5rem; color: #555;"></div>
   <script src="./countries.js"></script>
@@ -192,6 +202,18 @@
 
     // allow Enter key in input to trigger submit
     document.getElementById('guess').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('submit').click();
+      }
+    });
+    document.getElementById('guess-country').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('submit').click();
+      }
+    });
+    document.getElementById('guess-capital').addEventListener('keydown', e => {
       if (e.key === 'Enter') {
         e.preventDefault();
         document.getElementById('submit').click();
