@@ -235,13 +235,11 @@
     // after loading countries.js, set max questions
     questionCount.max = countries.length;
 
-    // Game selection event listeners
-    gameFlag.addEventListener('click', () => {
-      // build pool by category
+    // helper to initialize quiz parameters
+    function startQuiz() {
       quizPool = categorySelect.value === 'All'
         ? countries
         : countries.filter(c => c.categories.includes(categorySelect.value));
-      // clamp question count
       let q = parseInt(questionCount.value) || 1;
       q = Math.min(q, quizPool.length);
       questionCount.value = q;
@@ -249,6 +247,11 @@
       questionCount.max = quizPool.length;
       questionIndex = scoreEarned = scorePossible = 0;
       usedCountries = [];
+    }
+
+    // Game selection event listeners
+    gameFlag.addEventListener('click', () => {
+      startQuiz();
       gameMode = 'flagGiven';
       gameSelection.style.display = 'none';
       gameContainer.style.display = 'block';
@@ -261,16 +264,7 @@
     });
 
     gameCountry.addEventListener('click', () => {
-      quizPool = categorySelect.value === 'All'
-        ? countries
-        : countries.filter(c => c.categories.includes(categorySelect.value));
-      let q = parseInt(questionCount.value) || 1;
-      q = Math.min(q, quizPool.length);
-      questionCount.value = q;
-      totalQuestions = q;
-      questionCount.max = quizPool.length;
-      questionIndex = scoreEarned = scorePossible = 0;
-      usedCountries = [];
+      startQuiz();
       gameMode = 'countryNameGiven';
       gameSelection.style.display = 'none';
       gameContainer.style.display = 'block';
@@ -283,16 +277,7 @@
     });
 
     gameCapital.addEventListener('click', () => {
-      quizPool = categorySelect.value === 'All'
-        ? countries
-        : countries.filter(c => c.categories.includes(categorySelect.value));
-      let q = parseInt(questionCount.value) || 1;
-      q = Math.min(q, quizPool.length);
-      questionCount.value = q;
-      totalQuestions = q;
-      questionCount.max = quizPool.length;
-      questionIndex = scoreEarned = scorePossible = 0;
-      usedCountries = [];
+      startQuiz();
       gameMode = 'capitalGiven';
       gameSelection.style.display = 'none';
       gameContainer.style.display = 'block';
