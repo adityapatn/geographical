@@ -63,6 +63,7 @@
       </select>
     </label>
   </div>
+  
 
   <!-- Game container (initially hidden) -->
   <div id="game-container" style="display:none;">
@@ -88,6 +89,13 @@
   <p id="feedback"></p>
   <p id="details" style="margin-top:0.5rem; color: #555; font-size: 20px;"></p>
   <p id="progress" style="display:none; margin-top:0.5rem; color: #555; font-size: 20px;"></p>
+  <div id="explanation">
+    <p>Welcome to Geographical!</p>
+    <p>Flag Given: guess the country and capital from the flag</p>
+    <p>Country Name Given: guess the flag and the capital from the country</p>
+    <p>Capital Given: guess the country and the flag from the capital</p>
+    <p>Use 1-4 keys to select a flag, tab to move to the next input, and enter to submit your guess and move on.</p>
+  </div>
   <button id="next-button" style="display: none;">Next Question</button>
   <script src="./countries.js"></script>
   <script>
@@ -112,6 +120,7 @@
     const guessCapital     = document.getElementById('guess-capital');
     const categorySelect  = document.getElementById('category-select');
     const progressEl      = document.getElementById('progress');
+    const explanation     = document.getElementById('explanation');
 
     let current, totalQuestions = Infinity, questionIndex = 0;
     let scoreEarned = 0, scorePossible = 0;
