@@ -87,6 +87,7 @@
   
   <p id="feedback"></p>
   <p id="details" style="margin-top:0.5rem; color: #555; font-size: 20px;"></p>
+  <p id="progress" style="display:none; margin-top:0.5rem; color: #555; font-size: 20px;"></p>
   <button id="next-button" style="display: none;">Next Question</button>
   <script src="./countries.js"></script>
   <script>
@@ -110,6 +111,7 @@
     const guessCountry     = document.getElementById('guess-country');
     const guessCapital     = document.getElementById('guess-capital');
     const categorySelect  = document.getElementById('category-select');
+    const progressEl      = document.getElementById('progress');
 
     let current, totalQuestions = Infinity, questionIndex = 0;
     let scoreEarned = 0, scorePossible = 0;
@@ -135,6 +137,8 @@
         nextButton.style.display = 'none';
         // reset used tracking
         usedCountries = [];
+        progressEl.textContent = '';
+        progressEl.style.display = 'none';
       }
     }
 
@@ -174,6 +178,9 @@
         ? guessCountry
         : guessInput;
       firstInput && firstInput.focus();
+      // show and update progress
+      progressEl.style.display = 'block';
+      progressEl.textContent = `Question ${questionIndex+1} of ${totalQuestions}`;
     }
 
     // createFlagOptions() builds flag options from three distractors plus the correct answer.
@@ -401,9 +408,6 @@
     nextButton.addEventListener('click', () => {
       moveNext();
     });
-
-    // Initialize
-    pickRandom();
   </script>
 </body>
 </html>
