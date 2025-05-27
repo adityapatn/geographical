@@ -98,6 +98,7 @@
 
     let current, totalQuestions = Infinity, questionIndex = 0;
     let scoreEarned = 0, scorePossible = 0;
+    let usedCountries = [];
     let gameMode = ''; // "flagGiven", "countryNameGiven", "capitalGiven"
 
     // advance to next or return to start
@@ -116,6 +117,8 @@
           `${scoreEarned} out of ${scorePossible} correct (${pct}%)`;
         feedbackEl.textContent = '';
         nextButton.style.display = 'none';
+        // reset used tracking
+        usedCountries = [];
       }
     }
 
@@ -124,7 +127,10 @@
       guessInput.disabled = false;
       guessCountry.disabled = false;
       guessCapital.disabled = false;
-      current = countries[Math.floor(Math.random() * countries.length)];
+      // pick a country not yet used
+      const available = countries.filter(c => !usedCountries.includes(c));
+      current = available[Math.floor(Math.random() * available.length)];
+      usedCountries.push(current);
       if (gameMode === 'flagGiven') {
         flagImg.src = current.flagUrl;
         flagImg.style.display = 'block';
@@ -210,11 +216,20 @@
       return dp[m][n];
     }
 
+    // after loading countries.js, set max questions
+    questionCount.max = countries.length;
+
     // Game selection event listeners
     gameFlag.addEventListener('click', () => {
-      totalQuestions = parseInt(questionCount.value) || Infinity;
+      // clamp to available countries
+      let q = parseInt(questionCount.value) || 1;
+      q = Math.min(q, countries.length);
+      questionCount.value = q;
+      totalQuestions = q;
       questionIndex = 0;
       scoreEarned = scorePossible = 0;
+      // When starting any game mode, reset used list
+      usedCountries = [];
       gameMode = 'flagGiven';
       gameSelection.style.display = 'none';
       gameContainer.style.display = 'block';
@@ -227,9 +242,14 @@
     });
 
     gameCountry.addEventListener('click', () => {
-      totalQuestions = parseInt(questionCount.value) || Infinity;
+      let q = parseInt(questionCount.value) || 1;
+      q = Math.min(q, countries.length);
+      questionCount.value = q;
+      totalQuestions = q;
       questionIndex = 0;
       scoreEarned = scorePossible = 0;
+      // When starting any game mode, reset used list
+      usedCountries = [];
       gameMode = 'countryNameGiven';
       gameSelection.style.display = 'none';
       gameContainer.style.display = 'block';
@@ -242,9 +262,14 @@
     });
 
     gameCapital.addEventListener('click', () => {
-      totalQuestions = parseInt(questionCount.value) || Infinity;
+      let q = parseInt(questionCount.value) || 1;
+      q = Math.min(q, countries.length);
+      questionCount.value = q;
+      totalQuestions = q;
       questionIndex = 0;
       scoreEarned = scorePossible = 0;
+      // When starting any game mode, reset used list
+      usedCountries = [];
       gameMode = 'capitalGiven';
       gameSelection.style.display = 'none';
       gameContainer.style.display = 'block';

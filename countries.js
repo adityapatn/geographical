@@ -11,7 +11,7 @@
     { names:["Australia"],                 flagUrl:'https://flagcdn.com/au.svg', capitals:["Canberra"] },
     { names:["Austria"],                   flagUrl:'https://flagcdn.com/at.svg', capitals:["Vienna"] },
     { names:["Azerbaijan"],                flagUrl:'https://flagcdn.com/az.svg', capitals:["Baku"] },
-    { names:["Bahamas"],                   flagUrl:'https://flagcdn.com/bs.svg', capitals:["Nassau"] },
+    { names:["Bahamas", "The Bahamas"],    flagUrl:'https://flagcdn.com/bs.svg', capitals:["Nassau"] },
     { names:["Bahrain"],                   flagUrl:'https://flagcdn.com/bh.svg', capitals:["Manama"] },
     { names:["Bangladesh"],                flagUrl:'https://flagcdn.com/bd.svg', capitals:["Dhaka"] },
     { names:["Barbados"],                  flagUrl:'https://flagcdn.com/bb.svg', capitals:["Bridgetown"] },
