@@ -172,7 +172,7 @@
     { names:["Tajikistan"],                flagUrl:'https://flagcdn.com/tj.svg', capitals:["Dushanbe"], categories:["Asia"] },
     { names:["Tanzania"],                  flagUrl:'https://flagcdn.com/tz.svg', capitals:["Dodoma"], categories:["Africa"] },
     { names:["Thailand"],                  flagUrl:'https://flagcdn.com/th.svg', capitals:["Bangkok"], categories:["Asia"] },
-    { names:["Timor-Leste"],               flagUrl:'https://flagcdn.com/tl.svg', capitals:["Dili"], categories:["Asia","Small Island"] },
+    { names:["Timor-Leste", "East Timor"],               flagUrl:'https://flagcdn.com/tl.svg', capitals:["Dili"], categories:["Asia","Small Island"] },
     { names:["Togo"],                      flagUrl:'https://flagcdn.com/tg.svg', capitals:["Lomé"], categories:["Africa"] },
     { names:["Tonga"],                     flagUrl:'https://flagcdn.com/to.svg', capitals:["Nuku'alofa"], categories:["Oceania","Small Island"] },
     { names:["Trinidad And Tobago"],       flagUrl:'https://flagcdn.com/tt.svg', capitals:["Port of Spain"], categories:["North America","Small Island"] },

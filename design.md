@@ -10,3 +10,4 @@ Ask the user to pick between one of three games: Flag given, Country name given,
 To-do:
  - Add dark mode
  - Add overview and explanation on start page
+ - Add states category

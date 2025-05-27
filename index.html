@@ -60,6 +60,7 @@
         <option>Africa</option>
         <option>Oceania</option>
         <option>Small Island</option>
+        <option>US States</option>
       </select>
     </label>
   </div>
@@ -98,6 +99,7 @@
   </div>
   <button id="next-button" style="display: none;">Next Question</button>
   <script src="./countries.js"></script>
+  <script src="./states.js"></script>
   <script>
     // cache DOM elements
     const gameSelection    = document.getElementById('game-selection');
@@ -197,10 +199,11 @@
       const flagOptionsDiv = flagOptions;
       flagOptionsDiv.innerHTML = '';
       const distractors = [];
-      while(distractors.length < 3) {
-        const randomCountry = countries[Math.floor(Math.random() * countries.length)];
-        if (randomCountry.flagUrl !== current.flagUrl && !distractors.includes(randomCountry)) {
-          distractors.push(randomCountry);
+      // draw from current quizPool (countries or states)
+      while (distractors.length < 3) {
+        const item = quizPool[Math.floor(Math.random() * quizPool.length)];
+        if (item.flagUrl !== current.flagUrl && !distractors.includes(item)) {
+          distractors.push(item);
         }
       }
       const options = distractors.concat(current);
@@ -253,9 +256,12 @@
 
     // helper to initialize quiz parameters
     function startQuiz() {
-      quizPool = categorySelect.value === 'All'
-        ? countries
-        : countries.filter(c => c.categories.includes(categorySelect.value));
+      quizPool = categorySelect.value === 'US States'
+        ? states
+        : categorySelect.value === 'All'
+          ? countries
+          : countries.filter(c => c.categories.includes(categorySelect.value));
+
       let q = parseInt(questionCount.value) || 1;
       q = Math.min(q, quizPool.length);
       questionCount.value = q;
