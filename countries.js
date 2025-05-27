@@ -36,7 +36,7 @@
     { names:["Central African Republic","CAR"], flagUrl:'https://flagcdn.com/cf.svg', capitals:["Bangui"] },
     { names:["Chad"],                      flagUrl:'https://flagcdn.com/td.svg', capitals:["N'Djamena"] },
     { names:["Chile"],                     flagUrl:'https://flagcdn.com/cl.svg', capitals:["Santiago"] },
-    { names:["China"],                     flagUrl:'https://flagcdn.com/cn.svg', capitals:["Beijing"] },
+    { names:["China", "PRC", "People's Republic of China"],                     flagUrl:'https://flagcdn.com/cn.svg', capitals:["Beijing"] },
     { names:["Colombia"],                  flagUrl:'https://flagcdn.com/co.svg', capitals:["Bogotá"] },
     { names:["Comoros"],                   flagUrl:'https://flagcdn.com/km.svg', capitals:["Moroni"] },
     { names:["Costa Rica"],                flagUrl:'https://flagcdn.com/cr.svg', capitals:["San José"] },
@@ -194,7 +194,7 @@
     { names:["Zambia"],                    flagUrl:'https://flagcdn.com/zm.svg', capitals:["Lusaka"] },
     { names:["Zimbabwe"],                  flagUrl:'https://flagcdn.com/zw.svg', capitals:["Harare"] },
     // not UN-recognized
-    { names:["Taiwan", "Chinese Taipei"],                    flagUrl:'https://flagcdn.com/tw.svg', capitals:["Taipei"] },
+    { names:["Taiwan", "Chinese Taipei", "ROC", "Republic of China"], flagUrl:'https://flagcdn.com/tw.svg', capitals:["Taipei"] },
     { names:["Kosovo"],                    flagUrl:'https://flagcdn.com/xk.svg', capitals:["Pristina"] },
     { names:["Palestine"],                 flagUrl:'https://flagcdn.com/ps.svg', capitals:["East Jerusalem","Ramallah"] }
   ];

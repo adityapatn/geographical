@@ -273,8 +273,8 @@
         const capitalCorrect = current.capitals.some(cap => levenshtein(capitalVal, cap.toLowerCase()) <= 2);
         correct = countryCorrect && capitalCorrect;
         parts = [
-          countryCorrect ? '✅ Country correct' : `❌ Correct Country: ${current.names[0]}`,
-          capitalCorrect ? '✅ Capital correct' : `❌ Correct Capital: ${current.capitals.join(", ")}`
+          countryCorrect ? `✅ Country correct: ${current.names[0]}` : `❌ Correct Country: ${current.names[0]}`,
+          capitalCorrect ? `✅ Capital correct: ${current.capitals.join(", ")}` : `❌ Correct Capital: ${current.capitals.join(", ")}`
         ];
       } else if (gameMode === 'countryNameGiven') {
         const guessCapital = guessInput.value.trim().toLowerCase();
@@ -283,8 +283,8 @@
         const flagCorrect = selectedFlag === current.flagUrl;
         correct = capitalCorrect && flagCorrect;
         parts = [
-          capitalCorrect ? '✅ Capital correct' : `❌ Correct Capital: ${current.capitals.join(", ")}`,
-          flagCorrect    ? '✅ Flag correct'    : '❌ Flag incorrect'
+          capitalCorrect ? `✅ Capital correct: ${current.capitals.join(", ")}` : `❌ Correct Capital: ${current.capitals.join(", ")}`,
+          flagCorrect    ? `✅ Flag correct`            : '❌ Flag incorrect'
         ];
         // highlight correct flag
         document.querySelectorAll('#flag-options img').forEach(img => {
@@ -301,8 +301,8 @@
         const flagCorrect = selectedFlag === current.flagUrl;
         correct = countryCorrect && flagCorrect;
         parts = [
-          countryCorrect ? '✅ Country correct' : `❌ Correct Country: ${current.names[0]}`,
-          flagCorrect    ? '✅ Flag correct'    : '❌ Flag incorrect'
+          countryCorrect ? `✅ Country correct: ${current.names[0]}` : `❌ Correct Country: ${current.names[0]}`,
+          flagCorrect    ? `✅ Flag correct`   : '❌ Flag incorrect'
         ];
         // highlight correct flag
         document.querySelectorAll('#flag-options img').forEach(img => {
