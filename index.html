@@ -121,9 +121,9 @@
     const guessInput       = document.getElementById('guess');
     const guessCountry     = document.getElementById('guess-country');
     const guessCapital     = document.getElementById('guess-capital');
-    const categorySelect  = document.getElementById('category-select');
-    const progressEl      = document.getElementById('progress');
-    const explanation     = document.getElementById('explanation');
+    const categorySelect   = document.getElementById('category-select');
+    const progressEl       = document.getElementById('progress');
+    const explanation      = document.getElementById('explanation');
 
     let current, totalQuestions = Infinity, questionIndex = 0;
     let scoreEarned = 0, scorePossible = 0;
@@ -167,7 +167,7 @@
         flagImg.src = current.flagUrl;
         flagImg.style.display = 'block';
         flagGivenInputs.style.display = 'block';
-        questionEl.textContent = "Guess the Country and its capital based on the flag.";
+        questionEl.textContent = "Guess the country and its capital based on the flag.";
         flagOptions.style.display = 'none';
       } else if (gameMode === 'countryNameGiven') {
         questionEl.textContent = `Country: ${current.names[0]}. Guess the capital.`;
